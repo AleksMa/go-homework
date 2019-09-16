@@ -11,11 +11,12 @@ That weren't no DJ, that was hazy cosmic jive
 La, lo, la, la-la, la, la, la
 La, la, lo, la-la, la, la, la
 Lo, la, la, la-la, la, la, la
-La, la, la, la-la, la, la, lo
 La, la, la, la-la, lo, la, la
 La, la, la, la-la, la, la, la
 La, la, la, la-la, la, la, la
-LA, la, la, la-la, la, la, la
+La, la, la, la-la, la, la, lo
+LA, la, la, la-la, la, la, lo
 
-110 220
-9999 219
+10.5 219
+9 1
+1.5
