@@ -30,37 +30,37 @@ func parser(lexemes []string) (int, error) {
 		return 0, errors.New("Empty expression ")
 	}
 	lexemePointer := 0
-	result, err, _ := expr(lexemes, lexemePointer)
+	result, _, err := expr(lexemes, lexemePointer)
 	if err != nil {
 		return 0, err
 	}
 	return result, nil
 }
 
-func expr(lexemes []string, lexemePointer int) (int, error, int) {
-	res, err, leftInc := term(lexemes, lexemePointer)
+func expr(lexemes []string, lexemePointer int) (int, int, error) {
+	res, leftInc, err := term(lexemes, lexemePointer)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	next, err, rightInc := innerExpr(lexemes, lexemePointer+leftInc, res)
+	next, rightInc, err := innerExpr(lexemes, lexemePointer+leftInc, res)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	return next, nil, leftInc + rightInc
+	return next, leftInc + rightInc, err
 }
 
-func innerExpr(lexemes []string, lexemePointer int, left int) (int, error, int) {
+func innerExpr(lexemes []string, lexemePointer int, left int) (int, int, error) {
 	if lexemePointer < len(lexemes) && lexemes[lexemePointer] != "+" && lexemes[lexemePointer] != "-" {
-		return left, nil, 0
+		return left, 0, nil
 	}
 
 	if lexemePointer >= len(lexemes) {
-		return left, nil, 0
+		return left, 0, nil
 	}
 
-	res, err, leftInc := term(lexemes, lexemePointer+1)
+	res, leftInc, err := term(lexemes, lexemePointer+1)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
 
 	if lexemes[lexemePointer] == "+" {
@@ -69,36 +69,36 @@ func innerExpr(lexemes []string, lexemePointer int, left int) (int, error, int) 
 		left = left - res
 	}
 
-	next, err, rightInc := innerExpr(lexemes, lexemePointer+leftInc+1, left)
+	next, rightInc, err := innerExpr(lexemes, lexemePointer+leftInc+1, left)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	return next, nil, leftInc + 1 + rightInc
+	return next, leftInc + 1 + rightInc, nil
 }
 
-func term(lexemes []string, lexemePointer int) (int, error, int) {
-	res, err, leftInc := factor(lexemes, lexemePointer)
+func term(lexemes []string, lexemePointer int) (int, int, error) {
+	res, leftInc, err := factor(lexemes, lexemePointer)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	next, err, rightInc := innerTerm(lexemes, lexemePointer+leftInc, res)
+	next, rightInc, err := innerTerm(lexemes, lexemePointer+leftInc, res)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	return next, nil, leftInc + rightInc
+	return next, leftInc + rightInc, nil
 }
 
-func innerTerm(lexemes []string, lexemePointer int, left int) (int, error, int) {
+func innerTerm(lexemes []string, lexemePointer int, left int) (int, int, error) {
 	if lexemePointer < len(lexemes) && lexemes[lexemePointer] != "*" && lexemes[lexemePointer] != "/" {
-		return left, nil, 0
+		return left, 0, nil
 	}
 	if lexemePointer >= len(lexemes) {
-		return left, nil, 0
+		return left, 0, nil
 	}
 
-	res, err, leftInc := factor(lexemes, lexemePointer+1)
+	res, leftInc, err := factor(lexemes, lexemePointer+1)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
 
 	if lexemes[lexemePointer] == "*" {
@@ -107,35 +107,35 @@ func innerTerm(lexemes []string, lexemePointer int, left int) (int, error, int) 
 		left = left / res
 	}
 
-	next, err, rightInc := innerTerm(lexemes, lexemePointer+leftInc+1, left)
+	next, rightInc, err := innerTerm(lexemes, lexemePointer+leftInc+1, left)
 	if err != nil {
-		return 0, err, 0
+		return 0, 0, err
 	}
-	return next, nil, leftInc + 1 + rightInc
+	return next, leftInc + 1 + rightInc, nil
 }
 
-func factor(lexemes []string, lexemePointer int) (int, error, int) {
+func factor(lexemes []string, lexemePointer int) (int, int, error) {
 	if num, err := strconv.Atoi(lexemes[lexemePointer]); err == nil {
-		return num, nil, 1
+		return num, 1, err
 	}
 	if lexemes[lexemePointer] == "(" {
-		res, err, inc := expr(lexemes, lexemePointer+1)
+		res, inc, err := expr(lexemes, lexemePointer+1)
 		if err != nil {
-			return 0, err, 0
+			return 0, 0, err
 		}
 		if lexemes[lexemePointer+1+inc] != ")" {
-			return 0, fmt.Errorf("Unexpected symbol. Expected: ')', got: %s ", lexemes[lexemePointer+1+inc]), 0
+			return 0, 0, fmt.Errorf("Unexpected symbol. Expected: ')', got: %s ", lexemes[lexemePointer+1+inc])
 		}
-		return res, nil, inc + 2
+		return res, inc + 2, nil
 	}
 	if lexemes[lexemePointer] == "-" {
-		res, err, inc := factor(lexemes, lexemePointer+1)
+		res, inc, err := factor(lexemes, lexemePointer+1)
 		if err != nil {
-			return 0, err, 0
+			return 0, 0, err
 		}
-		return -res, nil, inc + 1
+		return -res, inc + 1, nil
 	}
-	return 0, errors.New("Unexpected construction "), 0
+	return 0, 0, errors.New("Unexpected construction ")
 }
 
 func lexer(expression string) ([]string, error) {
