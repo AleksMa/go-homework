@@ -172,7 +172,6 @@ func Calculate(expression string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	// fmt.Printf("%#v\n", lexemes)
 
 	result, err := parser(lexemes)
 	if err != nil {
@@ -187,19 +186,10 @@ func main() {
 		return
 	}
 
-	/*	expressionParts := os.Args[1:]
-		var expressionBuilder strings.Builder
-		for _, part := range expressionParts {
-			expressionBuilder.WriteString(part)
-		}
-		fmt.Println(expressionBuilder.String())
-	*/
-
 	result, err := Calculate(os.Args[1])
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println(result)
-
 }
