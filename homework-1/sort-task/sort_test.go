@@ -17,7 +17,16 @@ func TestSortStrings(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 1, false, false, false, false)
+	options := Options{
+		keyFlag:         1,
+		ignoreCaseFlag:  false,
+		uniqueFlag:      false,
+		reverseFlag:     false,
+		outputFlag:      "",
+		numericSortFlag: false,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: default sort")
@@ -35,7 +44,16 @@ func TestSortStringsKey3(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 3, false, false, false, false)
+	options := Options{
+		keyFlag:         3,
+		ignoreCaseFlag:  false,
+		uniqueFlag:      false,
+		reverseFlag:     false,
+		outputFlag:      "",
+		numericSortFlag: false,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: key -3 sort")
@@ -53,7 +71,16 @@ func TestSortStringsIgnoreCase(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 1, true, false, false, false)
+	options := Options{
+		keyFlag:         1,
+		ignoreCaseFlag:  true,
+		uniqueFlag:      false,
+		reverseFlag:     false,
+		outputFlag:      "",
+		numericSortFlag: false,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: ignore case sort")
@@ -71,7 +98,16 @@ func TestSortStringsUnique(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 1, false, true, false, false)
+	options := Options{
+		keyFlag:         1,
+		ignoreCaseFlag:  false,
+		uniqueFlag:      true,
+		reverseFlag:     false,
+		outputFlag:      "",
+		numericSortFlag: false,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: unique sort")
@@ -89,7 +125,16 @@ func TestSortStringsReverse(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 1, false, false, true, false)
+	options := Options{
+		keyFlag:         1,
+		ignoreCaseFlag:  false,
+		uniqueFlag:      false,
+		reverseFlag:     true,
+		outputFlag:      "",
+		numericSortFlag: false,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: reverse sort")
@@ -107,7 +152,16 @@ func TestSortStringsNumeric(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), 1, false, false, false, true)
+	options := Options{
+		keyFlag:         1,
+		ignoreCaseFlag:  false,
+		uniqueFlag:      false,
+		reverseFlag:     false,
+		outputFlag:      "",
+		numericSortFlag: true,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if result != string(correct) {
 		t.Errorf("Incorrect result: numeric sort")

@@ -26,6 +26,15 @@ const (
 	floatType
 )
 
+type Options struct {
+	keyFlag         int
+	ignoreCaseFlag  bool
+	uniqueFlag      bool
+	reverseFlag     bool
+	outputFlag      string
+	numericSortFlag bool
+}
+
 type Line struct {
 	Words    []string
 	PureLine string
@@ -78,7 +87,7 @@ func WordsLess(x []string, y []string, numericFlag bool) bool {
 	return x[0] < y[0]
 }
 
-func SortStrings(data string, keyFlag int, ignoreCaseFlag bool, uniqueFlag bool, reverseFlag bool, numericSortFlag bool) string {
+func SortStrings(data string, options Options) string {
 	uniqueSet := make(map[string]bool)
 
 	linesBuf := strings.Split(data, "\n")
@@ -86,9 +95,9 @@ func SortStrings(data string, keyFlag int, ignoreCaseFlag bool, uniqueFlag bool,
 
 	for _, line := range linesBuf {
 
-		if uniqueFlag {
+		if options.uniqueFlag {
 			uniqueLine := line
-			if ignoreCaseFlag {
+			if options.ignoreCaseFlag {
 				uniqueLine = strings.ToLower(uniqueLine)
 			}
 			if uniqueSet[uniqueLine] {
@@ -102,11 +111,11 @@ func SortStrings(data string, keyFlag int, ignoreCaseFlag bool, uniqueFlag bool,
 		lines = append(lines, Line{})
 
 		words := strings.Split(line, " ")
-		if ignoreCaseFlag {
+		if options.ignoreCaseFlag {
 			words = strings.Split(strings.ToLower(line), " ")
 		}
 		wordsLen := len(words)
-		minKey := int(math.Min(float64(keyFlag-1), float64(wordsLen)))
+		minKey := int(math.Min(float64(options.keyFlag-1), float64(wordsLen)))
 		wordsBase := words[minKey:]
 		wordsTail := words[:minKey]
 		lines[j].Words = make([]string, len(wordsBase), len(wordsBase))
@@ -115,21 +124,23 @@ func SortStrings(data string, keyFlag int, ignoreCaseFlag bool, uniqueFlag bool,
 		lines[j].PureLine = line
 	}
 
-	if reverseFlag {
+	if options.reverseFlag {
 		sort.Slice(lines, func(i, j int) bool {
-			return !WordsLess(lines[i].Words, lines[j].Words, numericSortFlag)
+			return !WordsLess(lines[i].Words, lines[j].Words, options.numericSortFlag)
 		})
 	} else {
 		sort.Slice(lines, func(i, j int) bool {
-			return WordsLess(lines[i].Words, lines[j].Words, numericSortFlag)
+			return WordsLess(lines[i].Words, lines[j].Words, options.numericSortFlag)
 		})
 	}
 
 	var result strings.Builder
 
-	for _, line := range lines {
+	for i, line := range lines {
 		result.WriteString(line.PureLine)
-		result.WriteString("\n")
+		if i < len(lines)-1 || options.outputFlag != "" { // Unix sort util prints '\n' at end only in -o mode
+			result.WriteString("\n")
+		}
 	}
 	return result.String()
 }
@@ -148,7 +159,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	result := SortStrings(string(data), *keyFlag, *ignoreCaseFlag, *uniqueFlag, *reverseFlag, *numericSortFlag)
+	options := Options{
+		keyFlag:         *keyFlag,
+		ignoreCaseFlag:  *ignoreCaseFlag,
+		uniqueFlag:      *uniqueFlag,
+		reverseFlag:     *reverseFlag,
+		outputFlag:      *outputFlag,
+		numericSortFlag: *numericSortFlag,
+	}
+
+	result := SortStrings(string(data), options)
 
 	if *outputFlag == "" {
 		fmt.Println(result)
