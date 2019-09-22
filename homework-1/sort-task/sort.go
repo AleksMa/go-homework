@@ -11,6 +11,15 @@ import (
 	"strings"
 )
 
+var (
+	keyFlag         = flag.Int("k", 1, "an int")
+	ignoreCaseFlag  = flag.Bool("f", false, "a bool")
+	uniqueFlag      = flag.Bool("u", false, "a bool")
+	reverseFlag     = flag.Bool("r", false, "a bool")
+	outputFlag      = flag.String("o", "", "a string")
+	numericSortFlag = flag.Bool("n", false, "a bool")
+)
+
 const (
 	notNumericType = iota
 	intType
@@ -126,13 +135,6 @@ func SortStrings(data string, keyFlag int, ignoreCaseFlag bool, uniqueFlag bool,
 }
 
 func main() {
-	keyFlag := flag.Int("k", 1, "an int")
-	ignoreCaseFlag := flag.Bool("f", false, "a bool")
-	uniqueFlag := flag.Bool("u", false, "a bool")
-	reverseFlag := flag.Bool("r", false, "a bool")
-	outputFlag := flag.String("o", "", "a string")
-	numericSortFlag := flag.Bool("n", false, "a bool")
-
 	flag.Parse()
 
 	if len(flag.Args()) < 1 {
