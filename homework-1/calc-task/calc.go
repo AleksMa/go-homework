@@ -8,7 +8,7 @@ import (
 	"unicode"
 )
 
-// Classic top-down parsing with accumulator
+// Classic top-down parsing
 // Each function for each expression in Grammar (except Number, Digit, DigitTail)
 
 /*
@@ -18,7 +18,7 @@ import (
  * InnerExpr    ::= + Term InnerExpr  | - Term InnerExpr | .
  * Term         ::=   Fact InnerTerm .
  * InnerTerm    ::= * Fact InnerTerm  | / Fact InnerTerm  | .
- * Fact			::=   Number | ( Expr ) | - Fact .
+ * Factor	 	::=   Number | ( Expr ) | - Fact .
  * Number       ::=   Digit DigitTail .
  * Digit        ::=   0 | 1  | ... | 9 .
  * DigitTail    ::=   Digit  | .
