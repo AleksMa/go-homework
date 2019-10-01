@@ -18,7 +18,9 @@ func SingleHash(in, out chan interface{}) {
 		fmt.Printf("SingleHash %s: crc32md5 %s \n", dataString, crc32md5)
 		crc32 := DataSignerCrc32(dataString)
 		fmt.Printf("SingleHash %s: crc32 %s \n", dataString, crc32)
-		out <- crc32 + "~" + crc32md5
+		result := crc32 + "~" + crc32md5
+		fmt.Printf("SingleHash %s: crc32 %s \n", dataString, result)
+		out <- result
 	}
 	close(out)
 }
@@ -28,10 +30,11 @@ func MultiHash(in, out chan interface{}) {
 		dataString := data.(string)
 		result := ""
 		for th := 0; th <= 5; th++ {
-			crc32 := DataSignerCrc32(string(th) + dataString)
+			crc32 := DataSignerCrc32(strconv.Itoa(th) + dataString)
 			fmt.Printf("MultiHash %s: step %d: result %s \n", dataString, th, crc32)
 			result += crc32
 		}
+		fmt.Printf("MultiHash %s: summary result %s \n", dataString, result)
 		out <- result
 	}
 	close(out)
