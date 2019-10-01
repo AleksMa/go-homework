@@ -146,6 +146,4 @@ func TestSigner(t *testing.T) {
 		t.Errorf("not enough hash-func calls")
 	}
 
-	fmt.Scanln()
-
 }
