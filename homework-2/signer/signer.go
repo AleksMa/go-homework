@@ -13,6 +13,7 @@ func SingleHash(in, out chan interface{}) {
 	for data := range in {
 		dataInt := data.(int)
 		dataString := strconv.Itoa(dataInt)
+		fmt.Printf("SingleHash %s: data %s \n", dataString, dataString)
 
 		wg.Add(1)
 		go func() {
@@ -21,13 +22,12 @@ func SingleHash(in, out chan interface{}) {
 			crc32md5Chan := make(chan string)
 
 			go func() {
-				fmt.Printf("SingleHash %s: data %s \n", dataString, dataString)
+				mu.Lock()
 				md5 := DataSignerMd5(dataString)
 				fmt.Printf("SingleHash %s: md5 %s \n", dataString, md5)
-				mu.Lock()
+				mu.Unlock()
 				crc32md5 := DataSignerCrc32(md5)
 				fmt.Printf("SingleHash %s: crc32md5 %s \n", dataString, crc32md5)
-				mu.Unlock()
 				crc32md5Chan <- crc32md5
 			}()
 
